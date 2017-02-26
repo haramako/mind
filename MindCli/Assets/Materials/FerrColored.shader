@@ -55,7 +55,11 @@ Shader "Custom/Ferr/Colored" {
 				hsv.g = hsv.g * power;
 
 				color = HSVToRGB(hsv);
-				color.rgb = color.rgb * (0.5 + power * 0.5);
+				if( hsv.g > 0.3 ){
+					color.rgb = color.rgb * (0.5 + power * 0.5);
+				}else{
+					color.rgb = color.rgb * 0.5;
+				}
 
 				color.rgb *= color.a;
 

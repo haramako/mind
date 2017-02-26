@@ -10,5 +10,6 @@ Assets/Ferr/2DTerrain/TerrainMaterials/ForegroundTerrainMaterial.prefab
 Assets/Ferr/2DTerrain/TerrainMaterials/CaveTerrainMaterial.prefab
 Assets/Ferr2D Terrain Material.asset
 Assets/Materials/MossyTerrainColoredMaterial.prefab
+Assets/Textures/Rock.asset
 
 [Ferr2DT_PathTerrain]

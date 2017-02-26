@@ -95,7 +95,13 @@
 				//hsv.b = 1;
 
 				c = HSVToRGB(hsv);
-				c.rgb = c.rgb * (0.5 + power * 0.5);
+				// カラフルなところだけ明るくなる
+				if( hsv.g > 0.1 ){
+					c.rgb = c.rgb * (0.5 + power * 0.5);
+				}else{
+					c.rgb = c.rgb * 0.5;
+				}
+				
 				//c.rgb = c.rgb * 0.5;
 
 				c.rgb *= c.a;
