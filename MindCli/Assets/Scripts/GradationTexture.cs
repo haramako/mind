@@ -6,7 +6,8 @@ using UnityEngine;
 public class GradationTexture : MonoBehaviour {
 
 	public Texture2D Texture;
-	public AnimationCurve HPowerCurve;
+	public AnimationCurve[] HPowerCurve;
+	public bool[] CurveEnabled;
 	public float Rotation;
 	const int Resolution = 256;
 
@@ -23,14 +24,22 @@ public class GradationTexture : MonoBehaviour {
 	void refresh(){
 		var data = new byte[Resolution];
 		const float len = Resolution / 6f;
+		var curveNum = Mathf.Min (HPowerCurve.Length, CurveEnabled.Length);
 		for (int i = 0; i < Resolution; i++) {
 			//var pos = (1f + Mathf.Abs (Mathf.Repeat (Time.time, 1f) - 0.5f) / 7f) * i; // ちょっと時間で色がずれるバージョン
 			var pos = i;
-			var pow = HPowerCurve.Evaluate (Mathf.Repeat (1f * pos / Resolution + Rotation, 1));
+			float pow = 0;
+			for( int n = 0; n < curveNum; n++){
+				if (CurveEnabled [n]) {
+					pow += HPowerCurve [n].Evaluate (Mathf.Repeat (1f * pos / Resolution + Rotation, 1));
+				}
+			}
 			data [i] = (byte)(Mathf.Clamp01(pow) * 255);
 		}
 		Texture.LoadRawTextureData (data);	
 		Texture.Apply ();
+
+		Shader.SetGlobalTexture ("_HPowerTex", Texture);
 	}
 	
 	void Update () {
