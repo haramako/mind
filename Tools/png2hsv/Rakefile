@@ -1,0 +1,21 @@
+EXE='./png2hsv'
+
+task :build do
+  sh 'go build'
+end
+
+task :test => :build do
+  Dir.glob '../../MindCli/Assets/Textures/*.png' do |f|
+    sh EXE, f, File.basename(f)
+  end
+end
+
+task :test_split => :build do
+  Dir.glob '../../MindCli/Assets/Textures/*.png' do |f|
+    sh EXE, '-split', f, File.basename(f)
+  end
+end
+
+task :clean do
+  FileUtils.rm_rf Dir.glob('*.png')
+end
