@@ -1,0 +1,11 @@
+/Library
+/Temp
+/obj
+*.csproj
+*.sln
+*.userprefs
+.vs
+
+mindcli.app
+mindcli.exe
+mindcli_Data
