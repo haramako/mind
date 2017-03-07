@@ -1,5 +1,4 @@
-﻿
-// RGBをHSVに変換する
+﻿// RGBをHSVに変換する
 // 帰り値の HSVA は RGBA に対応する
 fixed4 RGBToHSV(fixed4 c){
 	fixed max_ = max(max(c.r, c.g), c.b);

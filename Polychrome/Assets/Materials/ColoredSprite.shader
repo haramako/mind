@@ -5,6 +5,8 @@
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
 		_Color ("Tint", Color) = (1,1,1,1)
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
+		[KeywordEnum(RGB,HSV)]
+		_COLORSPACE("Color space", Float) = 0
 	}
 
 	SubShader
@@ -31,6 +33,7 @@
 			#pragma target 3.0
 			#pragma multi_compile _ PIXELSNAP_ON
 			#pragma multi_compile _ ETC1_EXTERNAL_ALPHA
+			#pragma multi_compile _COLORSPACE_RGB _COLORSPACE_HSV
 			#include "UnityCG.cginc"
 			
 			struct appdata_t
@@ -92,15 +95,16 @@
 			{
 				fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
 
+#ifdef _COLORSPACE_RGB
 				fixed4 hsv = RGBToHSV(c);
+#elif _COLORSPACE_HSV
+				fixed4 hsv = c;
+#endif
 				fixed power = tex2D(_HPowerTex, fixed2(hsv.r,0)).a;
 				fixed4 light = tex2D(_LightTex, IN.screenPos);
 				power = power + light.r * 2;
 				hsv.g = hsv.g * power;
 				hsv.b += light.b * 0.7;
-				//hsv.g = 1;
-				//hsv.b = 1;
-
 
 				c = HSVToRGB(hsv);
 				// カラフルなところだけ明るくなる
@@ -114,7 +118,7 @@
 
 				c.rgb *= c.a;
 
-				clip(c.a - 0.5);
+				clip(c.a - 0.05);
 
 				return c;
 			}

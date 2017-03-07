@@ -85,16 +85,21 @@ func doBatch(files []string) {
 // ファイルをTSPにコンバートする
 func convert(in, out string) {
 
-	r, err := os.Open(in)
+	nrgbaImg, err := loadPNGToNRGBA(in)
 	check(err)
 
-	srcImg, err := png.Decode(r)
-	check(err)
-
-	nrgbaImg := image.NewNRGBA(srcImg.Bounds())
-	draw.Draw(nrgbaImg, srcImg.Bounds(), srcImg, image.Point{0, 0}, draw.Src)
+	ext2 := filepath.Ext(in)
+	filename := in[0:len(in)-len(ext2)] + "_Light" + ext2
+	lightImg, err := loadPNGToNRGBA(filename)
+	if lightImg == nil {
+		// Light画像がない場合は、黒を使う
+		size := nrgbaImg.Bounds().Size()
+		lightImg = image.NewNRGBA(image.Rect(0, 0, size.X, size.Y))
+	}
 
 	img := NRGBImageToHSV(nrgbaImg)
+
+	img = compositeLight(img, lightImg)
 
 	if *optSplit {
 		// チャンネルスプリットする
@@ -120,6 +125,38 @@ func convert(in, out string) {
 	err = png.Encode(w, img)
 	check(err)
 	//}
+
+}
+
+func loadPNGToNRGBA(file string) (*image.NRGBA, error) {
+	r, err := os.Open(file)
+	if err != nil {
+		return nil, err
+	}
+
+	img, err := png.Decode(r)
+	if err != nil {
+		return nil, err
+	}
+
+	nrgbaImg := image.NewNRGBA(img.Bounds())
+	draw.Draw(nrgbaImg, img.Bounds(), img, image.Point{0, 0}, draw.Src)
+
+	return nrgbaImg, nil
+}
+
+func compositeLight(srcImg, lightImg *image.NRGBA) *image.NRGBA {
+	size := srcImg.Bounds().Size()
+	img := image.NewNRGBA(image.Rect(0, 0, size.X, size.Y))
+	for y := 0; y < size.Y; y++ {
+		for x := 0; x < size.X; x++ {
+			var c1 = srcImg.NRGBAAt(x, y)
+			var c2 = lightImg.NRGBAAt(x, y)
+			var c = color.NRGBA{c1.R, c1.G, byte((int(c1.B) + int(c2.B)*int(c2.A)/255) / 2), c1.A}
+			img.SetNRGBA(x, y, c)
+		}
+	}
+	return img
 
 }
 

@@ -5,13 +5,14 @@ task :build do
 end
 
 task :test => :build do
-  Dir.glob '../../MindCli/Assets/Textures/*.png' do |f|
+  Dir.glob '../../Images/*.png' do |f|
     sh EXE, f, File.basename(f)
   end
 end
 
 task :test_split => :build do
-  Dir.glob '../../MindCli/Assets/Textures/*.png' do |f|
+  Dir.glob '../../Images/*.png' do |f|
+    next if f.match /_Light.png$/
     sh EXE, '-split', f, File.basename(f)
   end
 end
