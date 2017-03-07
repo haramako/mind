@@ -4,6 +4,14 @@ task :build do
   sh 'go build'
 end
 
+task :bin do
+  sh 'GOOS=windows GOARCH=amd64 go build'
+  sh 'go build'
+  mkdir_p '../bin'
+  cp 'png2hsv.exe', '../bin'
+  cp 'png2hsv', '../bin'
+end
+
 task :test => :build do
   Dir.glob '../../Images/*.png' do |f|
     sh EXE, f, File.basename(f)
