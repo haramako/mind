@@ -104,11 +104,10 @@ func convert(in, out string) {
 	if *optSplit {
 		// チャンネルスプリットする
 		imgs := SplitChannel(img)
-		channel := "CHSV"
-		for i := 0; i < 4; i++ {
+		channel := "CDHSV"
+		for i := 0; i < 5; i++ {
 			ext := filepath.Ext(out)
-			basename := filepath.Base(out)
-			basename = basename[0 : len(basename)-len(ext)]
+			basename := out[0 : len(out)-len(ext)]
 			w, err := os.OpenFile(basename+"_"+string(channel[i])+ext, os.O_CREATE|os.O_WRONLY, 0666)
 			check(err)
 
@@ -253,8 +252,8 @@ func NRGBImageToHSV(src *image.NRGBA) *image.NRGBA {
 // カラー成分のみの画像を作成する
 // RGBA <= RGB1
 func SplitChannel(src *image.NRGBA) []*image.NRGBA {
-	var imgs [4]*image.NRGBA
-	for i := 0; i < 4; i++ {
+	var imgs [5]*image.NRGBA
+	for i := 0; i < 5; i++ {
 		imgs[i] = image.NewNRGBA(src.Bounds())
 	}
 	size := src.Bounds().Size()
@@ -263,9 +262,10 @@ func SplitChannel(src *image.NRGBA) []*image.NRGBA {
 			var c = src.NRGBAAt(x, y)
 			//imgs[0].SetNRGBA(x, y, HSVToRGB(c))
 			imgs[0].SetNRGBA(x, y, HSVToRGB(color.NRGBA{c.R, 255, 255, c.A}))
-			imgs[1].SetNRGBA(x, y, color.NRGBA{c.R, 0, 0, c.A})
-			imgs[2].SetNRGBA(x, y, color.NRGBA{0, c.G, 0, c.A})
-			imgs[3].SetNRGBA(x, y, color.NRGBA{0, 0, c.B, c.A})
+			imgs[1].SetNRGBA(x, y, HSVToRGB(c))
+			imgs[2].SetNRGBA(x, y, color.NRGBA{c.R, 0, 0, c.A})
+			imgs[3].SetNRGBA(x, y, color.NRGBA{0, c.G, 0, c.A})
+			imgs[4].SetNRGBA(x, y, color.NRGBA{0, 0, c.B, c.A})
 		}
 	}
 	return imgs[:]

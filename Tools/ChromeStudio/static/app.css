@@ -1,0 +1,40 @@
+.img-thumb-holder {
+	display: inline-block;
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	background-color: #444;
+	vertical-align: top;
+}
+
+.img-thumb {
+	max-width: 40px;
+	max-height: 40px;
+}
+
+.img-big-holder {
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	height: 220px;
+	position: relative;
+	background-color: #444;
+	margin-bottom: 20px;
+}
+
+.img-big-holder a {
+	color: white;
+}
+
+.img-big {
+	max-width: 200px;
+	max-height: 200px;
+}
+
+.img-name {
+	position: absolute;
+	bottom: 200px;
+	left: 0;
+	color: white;
+}
+

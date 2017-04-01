@@ -1,0 +1,17 @@
+%div
+  %h1 ChromeStudio
+  %table.table.table-split
+    %tr
+      %th 画像
+      %th ファイル名
+    - @imgs.each do |f|
+      %tr
+        %td
+          %a{ href: "img/#{f}" }
+            .img-thumb-holder
+              %img.img-thumb{ src: img_url(f) }
+            .img-thumb-holder
+              %img.img-thumb{ src: img_url(light_img(f)) }
+        %td
+          %a{ href: "/img/#{f}" }
+            =f

@@ -1,9 +1,16 @@
+# coding: utf-8
 EXE='./png2hsv'
 
+
+
+task :default => :build
+
+desc '実行ファイルのビルド'
 task :build do
   sh 'go build'
 end
 
+desc 'Windows/Macの実行ファイルを所定の場所(../bin)にコピーする'
 task :bin do
   sh 'GOOS=windows GOARCH=amd64 go build'
   sh 'go build'
@@ -12,19 +19,24 @@ task :bin do
   cp 'png2hsv', '../bin'
 end
 
+desc 'テスト'
 task :test => :build do
+  mkdir_p 'test_images'
   Dir.glob '../../Images/*.png' do |f|
-    sh EXE, f, File.basename(f)
+    sh EXE, f, 'test_images/' + File.basename(f)
   end
 end
 
+desc 'テスト(-splitオプションつき)'
 task :test_split => :build do
+  mkdir_p 'test_images'
   Dir.glob '../../Images/*.png' do |f|
     next if f.match /_Light.png$/
-    sh EXE, '-split', f, File.basename(f)
+    sh EXE, '-split', f, 'test_images/' + File.basename(f)
   end
 end
 
+desc '不要なファイルを消す'
 task :clean do
-  FileUtils.rm_rf Dir.glob('*.png')
+  FileUtils.rm_rf 'test_images'
 end

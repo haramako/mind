@@ -1,0 +1,25 @@
+%div
+  %h1
+    =@id
+  %div
+    .img-big-holder
+      %a{ href: img_url(@id), 'data-lightbox' => 'default', 'data-title' => 'カラー' }
+        %img.img-big{ src: img_url(@id) }
+      .img-name カラー
+    .img-big-holder
+      %a{ href: img_url(light_img(@id)), 'data-lightbox' => 'default', 'data-title' => 'ライト' }
+        %img.img-big{ src: img_url(light_img(@id)) }
+      .img-name ライト
+    .img-big-holder
+      %a{ href: "/img/#{@id}/D", 'data-lightbox' => 'default', 'data-title' => 'DDR(DoubleDynamicRange)' }
+        %img.img-big{ src: "/img/#{@id}/D" }
+      .img-name DDR(DoubleDynamicRange)
+    _
+    %br
+    - [:HSV, :C, :H, :S, :V].each do |channel|
+      .img-big-holder
+        %a{ href: "/img/#{@id}/#{channel}", 'data-lightbox' => 'default', 'data-title' => CHANNEL_NAMES[channel] }
+          %img.img-big{ src: "/img/#{@id}/#{channel}" }
+          %div.img-name= CHANNEL_NAMES[channel]
+
+          
